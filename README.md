@@ -1,6 +1,6 @@
 # lr - latin-russian transliterator for UNIX-like OSs (with X-server)
 
-This program transliterates your Latin inputs into Russian-Cyrillic letters, according to the table printed when starting the program. It tries to use ![xclip](https://github.com/astrand/xclip) to paste the output into the X clipboard buffer.
+This program transliterates your Latin inputs into Russian-Cyrillic letters, according to the table printed when starting the program. It tries to use [xclip](https://github.com/astrand/xclip) to paste the output into the X clipboard buffer.
 
 It should be useful if you, like me, lack practice with the Russian keyboard layout and want to quickly produce Cyrillic words with the layouts you know.
 

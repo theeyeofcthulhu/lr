@@ -166,6 +166,7 @@ int create_xclip_pipe(void)
             return 1;
         }
 
+        // Read read-end of pipe into stdin
         close(fd[1]);
         dup2(fd[0], STDIN_FILENO);
         execl(xclip, xclip, "-selection", "clipboard", NULL);
@@ -199,19 +200,19 @@ int main(int argc, char **argv)
     char in[INPUT_BUF_SZ];
 
     while (1) {
+        // nothing read, exit
+        if (fgets(in, sizeof(in), stdin) == NULL)
+            break;
+
+        char *nl;
+        if ((nl = strchr(in, '\n')) != NULL)
+            *nl = '\0';
+
         // Simultaneously write output to "xclip" program,
         // putting into X copy/paste buffer
         int xclip_fd;
         if (use_xclip)
             xclip_fd = create_xclip_pipe();
-
-        if (fgets(in, sizeof(in), stdin) == NULL) {
-            error(1, 0, "fgets error or no characters read");
-        }
-
-        char *nl;
-        if ((nl = strchr(in, '\n')) != NULL)
-            *nl = '\0';
 
         char carry = '\0';
         for (char *i = in; *i; i++) {
