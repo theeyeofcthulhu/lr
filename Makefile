@@ -10,6 +10,9 @@ all: $(EXE)
 run: all
 	./$(EXE)
 
+install: all
+	cp lr /opt
+
 $(EXE): $(OBJ)
 	$(CC) -o $@ $^
 
