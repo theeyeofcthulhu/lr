@@ -63,8 +63,13 @@ wchar_t to_cyrillic(const char *str, int i)
             return L'\u0437';
         }
     }
-    case 'i':
-        return L'\u0438';
+    case 'i': {
+        if(prev == 'y') {
+            return L'\u044B';
+        } else {
+            return L'\u0438';
+        }
+    }
     case 'j':
         return L'\u0439';
     case 'k': {
@@ -113,19 +118,13 @@ wchar_t to_cyrillic(const char *str, int i)
     }
     case '"':
         return L'\u044A';
-    case 'y': {
-        if(prev == 'y') {
-            return L'\u044B';
-        } else {
-            return L'\0';
-        }
-    }
     case '\'':
         return L'\u044C';
     // alternate codes
     case 'x':
         return L'\u0445';
     // only used in combination with other characters
+    case 'y':
     case 'h':
         return '\0';
     default:
@@ -213,7 +212,7 @@ int main(int argc, char **argv)
         puts(out);
 
         if (use_xclip) {
-            xclip_fd = create_xclip_pipe();
+            int xclip_fd = create_xclip_pipe();
             dprintf(xclip_fd, "%s", out);
             close(xclip_fd);
         }
