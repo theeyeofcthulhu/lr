@@ -12,21 +12,23 @@
 
 void print_table(void)
 {
-    printf("ya: %lc, a: %lc, b: %lc, v: %lc, g: %lc, d: %lc, ye: %lc, e: %lc, yo: %lc, o: %lc, hz: %lc, z: %lc\n"
-           "i: %lc, j: %lc, hk,x: %lc, k: %lc, l: %lc, m: %lc, n: %lc, p: %lc, r: %lc, ys: %lc, hs: %lc, s: %lc\n"
-           "t: %lc, yu: %lc, u: %lc, f: %lc, hc: %lc, c: %lc, \": %lc, yy: %lc, ': %lc\n",
+    printf("ya: %lc, a: %lc, b: %lc, v: %lc, g: %lc, d: %lc, ye: %lc, e: %lc, yo: %lc, o: %lc, zh: %lc, z: %lc\n"
+           "i: %lc, j: %lc, kh,x: %lc, k: %lc, l: %lc, m: %lc, n: %lc, p: %lc, r: %lc, w: %lc, sh: %lc, s: %lc\n"
+           "t: %lc, yu: %lc, u: %lc, f: %lc, ch: %lc, c: %lc, \": %lc, yy: %lc, ': %lc\n",
            L'\u044F', L'\u0430', L'\u0431', L'\u0432', L'\u0433', L'\u0434', L'\u044D', L'\u0435', L'\u0451', 
            L'\u043E', L'\u0436', L'\u0437', L'\u0438', L'\u0439', L'\u0445', L'\u043A', L'\u043B', L'\u043C',
            L'\u043D', L'\u043F', L'\u0440', L'\u0449', L'\u0448', L'\u0441', L'\u0442', L'\u044E', L'\u0443',
            L'\u0444', L'\u0447', L'\u0446', L'\u044A', L'\u044B', L'\u044C');  
 }
 
-wchar_t to_cyrillic(char c, char *carry)
+wchar_t to_cyrillic(const char *str, int i)
 {
-    switch(c) {
+    char prev = i != 0 ? str[i-1] : '\0';
+    char next = str[i+1];
+
+    switch(str[i]) {
     case 'a': {
-        if(*carry == 'y') {
-            *carry = '\0';
+        if(prev == 'y') {
             return L'\u044F';
         } else {
             return L'\u0430';
@@ -41,24 +43,21 @@ wchar_t to_cyrillic(char c, char *carry)
     case 'd':
         return L'\u0434';
     case 'e': {
-        if(*carry == 'y') {
-            *carry = '\0';
+        if(prev == 'y') {
             return L'\u044D';
         } else {
             return L'\u0435';
         }
     }
     case 'o': {
-        if(*carry == 'y') {
-            *carry = '\0';
+        if(prev == 'y') {
             return L'\u0451';
         } else {
             return L'\u043E';
         }
     }
     case 'z': {
-        if(*carry == 'h') {
-            *carry = '\0';
+        if(next == 'h') {
             return L'\u0436';
         } else {
             return L'\u0437';
@@ -69,8 +68,7 @@ wchar_t to_cyrillic(char c, char *carry)
     case 'j':
         return L'\u0439';
     case 'k': {
-        if(*carry == 'h') {
-            *carry = '\0';
+        if(next == 'h') {
             return L'\u0445';
         } else {
             return L'\u043A';
@@ -87,11 +85,7 @@ wchar_t to_cyrillic(char c, char *carry)
     case 'r':
         return L'\u0440';
     case 's': {
-        if(*carry == 'y') {
-            *carry = '\0';
-            return L'\u0449';
-        } else if(*carry == 'h') {
-            *carry = '\0';
+        if(next == 'h') {
             return L'\u0448';
         } else {
             return L'\u0441';
@@ -100,18 +94,18 @@ wchar_t to_cyrillic(char c, char *carry)
     case 't':
         return L'\u0442';
     case 'u': {
-        if(*carry == 'y') {
-            *carry = '\0';
+        if(prev == 'y') {
             return L'\u044E';
         } else {
             return L'\u0443';
         }
     }
+    case 'w':
+        return L'\u0449';
     case 'f':
         return L'\u0444';
     case 'c': {
-        if(*carry == 'h') {
-            *carry = '\0';
+        if(next == 'h') {
             return L'\u0447';
         } else {
             return L'\u0446';
@@ -120,24 +114,22 @@ wchar_t to_cyrillic(char c, char *carry)
     case '"':
         return L'\u044A';
     case 'y': {
-        if(*carry == 'y') {
-            *carry = '\0';
+        if(prev == 'y') {
             return L'\u044B';
         } else {
-            *carry = 'y';
             return L'\0';
         }
     }
     case '\'':
         return L'\u044C';
-    case 'h':
-        *carry = 'h';
-        return L'\0';
     // alternate codes
     case 'x':
         return L'\u0445';
+    // only used in combination with other characters
+    case 'h':
+        return '\0';
     default:
-        return c;
+        return str[i];
     }
 
     return L'\0';
@@ -197,7 +189,7 @@ int main(int argc, char **argv)
 
     print_table();
 
-    char in[INPUT_BUF_SZ];
+    char in[INPUT_BUF_SZ], out[2*INPUT_BUF_SZ];
 
     while (1) {
         // nothing read, exit
@@ -214,19 +206,20 @@ int main(int argc, char **argv)
         if (use_xclip)
             xclip_fd = create_xclip_pipe();
 
-        char carry = '\0';
-        for (char *i = in; *i; i++) {
-            wchar_t c = to_cyrillic(*i, &carry);
+        char *out_i = out;
+        for (int i = 0; in[i] != '\0'; i++) {
+            wchar_t c = to_cyrillic(in, i);
             if (c != L'\0') {
-                printf("%lc", c);
-                if (use_xclip)
-                    dprintf(xclip_fd, "%lc", c);
+                out_i += sprintf(out_i, "%lc", c);
             }
         }
 
-        printf("\n");
-        if (use_xclip)
+        puts(out);
+
+        if (use_xclip) {
+            dprintf(xclip_fd, "%s", out);
             close(xclip_fd);
+        }
     }
 
     return 0;
