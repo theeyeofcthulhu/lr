@@ -202,10 +202,6 @@ int main(int argc, char **argv)
 
         // Simultaneously write output to "xclip" program,
         // putting into X copy/paste buffer
-        int xclip_fd;
-        if (use_xclip)
-            xclip_fd = create_xclip_pipe();
-
         char *out_i = out;
         for (int i = 0; in[i] != '\0'; i++) {
             wchar_t c = to_cyrillic(in, i);
@@ -217,6 +213,7 @@ int main(int argc, char **argv)
         puts(out);
 
         if (use_xclip) {
+            xclip_fd = create_xclip_pipe();
             dprintf(xclip_fd, "%s", out);
             close(xclip_fd);
         }
