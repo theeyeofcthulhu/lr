@@ -1,12 +1,16 @@
-#include <stdio.h>
 #include <errno.h>
 #include <error.h>
-#include <string.h>
-#include <wchar.h>
-#include <locale.h>
-#include <unistd.h>
 #include <getopt.h>
+#include <locale.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <wchar.h>
+
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #define INPUT_BUF_SZ 2048
 
@@ -188,19 +192,18 @@ int main(int argc, char **argv)
 
     print_table();
 
-    char in[INPUT_BUF_SZ], out[2*INPUT_BUF_SZ];
+    char *in, *out;
+    while ((in = readline(": ")) != NULL) {
+        if (strlen(in) == 0) {
+            puts(""); // Simulate an emtpy string being entered
+            free(in);
+            continue;
+        }
 
-    while (1) {
-        // nothing read, exit
-        if (fgets(in, sizeof(in), stdin) == NULL)
-            break;
+        add_history(in);
 
-        char *nl;
-        if ((nl = strchr(in, '\n')) != NULL)
-            *nl = '\0';
+        out = malloc(2 * strlen(in) * sizeof(char));
 
-        // Simultaneously write output to "xclip" program,
-        // putting into X copy/paste buffer
         char *out_i = out;
         for (int i = 0; in[i] != '\0'; i++) {
             wchar_t c = to_cyrillic(in, i);
@@ -216,6 +219,9 @@ int main(int argc, char **argv)
             dprintf(xclip_fd, "%s", out);
             close(xclip_fd);
         }
+
+        free(in);
+        free(out);
     }
 
     return 0;
