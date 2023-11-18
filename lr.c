@@ -289,17 +289,34 @@ int main(int argc, char **argv)
 
     setlocale(LC_ALL, "");
 
-    print_table();
-
     char *in, *out;
+    char *to_free = NULL;
+
     while ((in = readline(": ")) != NULL) {
+        // Free the last allocated pointer
+        // (So we don't have to put free at the end,
+        // and can jump around the loop)
+        free(to_free);
+        to_free = in;
+
         if (strlen(in) == 0) {
             puts(""); // Simulate an emtpy string being entered
-            free(in);
             continue;
         }
 
         add_history(in);
+
+        if (in[0] == '!') {
+            if (strcmp(in+1, "table") == 0) {
+                print_table();
+            } else if (strcmp(in+1, "q") == 0) {
+                break;
+            } else {
+                printf("Unknown command: '%s'\n", in+1);
+            }
+
+            continue;
+        }
 
         out = malloc(strlen(in) * sizeof(wchar_t));
         *out = '\0';
@@ -320,9 +337,12 @@ int main(int argc, char **argv)
             close(xclip_fd);
         }
 
-        free(in);
         free(out);
     }
+
+    // If we exited with '!q', or the loop condition,
+    // the pointer still needs to freed.
+    free(to_free);
 
     return 0;
 }
