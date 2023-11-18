@@ -297,14 +297,20 @@ int init_live_update_space(void)
 int live_update(void)
 {
     static char out[INPUT_BUF_SZ];
+    static char last_input[INPUT_BUF_SZ] = {0};
 
     char *s = rl_copy_text(0, rl_end);
-    to_cyrillic(s, out);
 
-    // Save cursor, go to beginning of next line,
-    // erase line, write 'out', restore cursor
-    printf("\033[s\033[1E\033[K%s\033[u", out);
-    fflush(stdout);
+    if (strcmp(s, last_input) != 0) {
+        to_cyrillic(s, out);
+
+        // Save cursor, go to beginning of next line,
+        // erase line, write 'out', restore cursor
+        printf("\033[s\033[1E\033[K%s\033[u", out);
+        fflush(stdout);
+
+        sprintf(last_input, "%s", s);
+    }
 
     free(s);
 
