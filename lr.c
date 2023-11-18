@@ -132,6 +132,8 @@ wchar_t to_cyrillic(const char *str, int i)
     case 'h':
         return '\0';
     default:
+        if (str[i] < 0) // non-ascii value, better not return
+            return '\0';
         return str[i];
     }
 
@@ -202,7 +204,8 @@ int main(int argc, char **argv)
 
         add_history(in);
 
-        out = malloc(2 * strlen(in) * sizeof(char));
+        out = malloc(strlen(in) * sizeof(wchar_t));
+        *out = '\0';
 
         char *out_i = out;
         for (int i = 0; in[i] != '\0'; i++) {

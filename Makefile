@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic
+CFLAGS=-g -Wall -Wextra -pedantic
 
 SRC=lr.c
 OBJ=lr.o
