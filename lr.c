@@ -21,8 +21,8 @@ void print_table(void)
            "t: %lc, yu: %lc, u: %lc, f: %lc, ch: %lc, c: %lc, \": %lc, yy: %lc, ': %lc\n",
            L'\u044F', L'\u0430', L'\u0431', L'\u0432', L'\u0433', L'\u0434', L'\u044D', L'\u0435', L'\u0451', 
            L'\u043E', L'\u0436', L'\u0437', L'\u0438', L'\u0439', L'\u0445', L'\u043A', L'\u043B', L'\u043C',
-           L'\u043D', L'\u043F', L'\u0440', L'\u0449', L'\u0448', L'\u0441', L'\u0442', L'\u044E', L'\u0443',
-           L'\u0444', L'\u0447', L'\u0446', L'\u044A', L'\u044B', L'\u044C');  
+           L'\u043D', L'\u043F', L'\u0440', L'\u0449', L'\u0448', L'\u0446', L'\u0442', L'\u044E', L'\u0443',
+           L'\u0444', L'\u0447', L'\u0441', L'\u044A', L'\u044B', L'\u044C');  
 }
 
 wchar_t to_cyrillic(const char *str, int i)
@@ -97,7 +97,7 @@ wchar_t to_cyrillic(const char *str, int i)
         if(next == 'h') {
             return L'\u0448';
         } else {
-            return L'\u0441';
+            return L'\u0446';
         }
     }
     case 't':
@@ -117,7 +117,7 @@ wchar_t to_cyrillic(const char *str, int i)
         if(next == 'h') {
             return L'\u0447';
         } else {
-            return L'\u0446';
+            return L'\u0441';
         }
     }
     case '"':
