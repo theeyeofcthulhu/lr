@@ -4,6 +4,8 @@ This program transliterates your Latin inputs into Russian-Cyrillic letters, acc
 
 It should be useful if you, like me, lack practice with the Russian keyboard layout and want to quickly produce Cyrillic words with the layouts you know.
 
+The program tries to use ANSI escape sequences combined with readline's hooks to provide a live update of the Cyrillic output. Pass '-l' to disable this.
+
 Uses [GNU readline](https://www.gnu.org/s/readline/) to receive input. 
 
 Examples 

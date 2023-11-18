@@ -221,7 +221,7 @@ wchar_t to_cyrillic_lower(const char *str, int i)
 // Converts str[i] to a cyrillic letter depending, sometimes,
 // on the previous and following letters in str.
 // Respects case.
-wchar_t to_cyrillic(const char *str, int i)
+wchar_t char_to_cyrillic(const char *str, int i)
 {
     wchar_t ret = to_cyrillic_lower(str, i);
 
@@ -234,6 +234,18 @@ wchar_t to_cyrillic(const char *str, int i)
         return cyrillic_uppercase(ret);
     } else {
         return ret;
+    }
+}
+
+void to_cyrillic(const char *in, char *out) {
+    *out = '\0';
+
+    char *out_i = out;
+    for (int i = 0; in[i] != '\0'; i++) {
+        wchar_t c = char_to_cyrillic(in, i);
+        if (c != L'\0') {
+            out_i += sprintf(out_i, "%lc", c);
+        }
     }
 }
 
@@ -272,15 +284,46 @@ int create_xclip_pipe(void)
     }
 }
 
+// Add empty line below and move back up
+int init_live_update_space(void)
+{
+    puts("");
+    printf("\033[1A");
+
+    return 0;
+}
+
+// Print live cyrillic output to line under readline buffer
+int live_update(void)
+{
+    static char out[INPUT_BUF_SZ];
+
+    char *s = rl_copy_text(0, rl_end);
+    to_cyrillic(s, out);
+
+    // Save cursor, go to beginning of next line,
+    // erase line, write 'out', restore cursor
+    printf("\033[s\033[1E\033[K%s\033[u", out);
+    fflush(stdout);
+
+    free(s);
+
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     bool use_xclip = true;
+    bool do_live_update = true;
 
     int flag;
-    while ((flag = getopt(argc, argv, "x")) != -1) {
+    while ((flag = getopt(argc, argv, "xl")) != -1) {
         switch (flag) {
         case 'x':
             use_xclip = false;
+            break;
+        case 'l':
+            do_live_update = false;
             break;
         default:
             return 1;
@@ -289,8 +332,15 @@ int main(int argc, char **argv)
 
     setlocale(LC_ALL, "");
 
-    char *in, *out;
+    char *in;
     char *to_free = NULL;
+
+    char out[INPUT_BUF_SZ];
+
+    if (do_live_update) {
+        rl_startup_hook = init_live_update_space;
+        rl_event_hook = live_update;
+    }
 
     while ((in = readline(": ")) != NULL) {
         // Free the last allocated pointer
@@ -318,17 +368,7 @@ int main(int argc, char **argv)
             continue;
         }
 
-        out = malloc(strlen(in) * sizeof(wchar_t));
-        *out = '\0';
-
-        char *out_i = out;
-        for (int i = 0; in[i] != '\0'; i++) {
-            wchar_t c = to_cyrillic(in, i);
-            if (c != L'\0') {
-                out_i += sprintf(out_i, "%lc", c);
-            }
-        }
-
+        to_cyrillic(in, out);
         puts(out);
 
         if (use_xclip) {
@@ -336,8 +376,6 @@ int main(int argc, char **argv)
             dprintf(xclip_fd, "%s", out);
             close(xclip_fd);
         }
-
-        free(out);
     }
 
     // If we exited with '!q', or the loop condition,
