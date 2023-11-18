@@ -216,8 +216,6 @@ wchar_t to_cyrillic_lower(const char *str, int i)
             return '\0';
         return c;
     }
-
-    return L'\0';
 }
 
 // Converts str[i] to a cyrillic letter depending, sometimes,
