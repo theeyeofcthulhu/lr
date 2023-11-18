@@ -349,6 +349,10 @@ int main(int argc, char **argv)
         free(to_free);
         to_free = in;
 
+        // Clear any remnants of live update output
+        if (do_live_update)
+            printf("\033[K");
+
         if (strlen(in) == 0) {
             puts(""); // Simulate an emtpy string being entered
             continue;
@@ -369,6 +373,7 @@ int main(int argc, char **argv)
         }
 
         to_cyrillic(in, out);
+
         puts(out);
 
         if (use_xclip) {
