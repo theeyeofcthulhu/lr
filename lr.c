@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <errno.h>
 #include <error.h>
 #include <getopt.h>
@@ -25,12 +26,91 @@ void print_table(void)
            L'\u0444', L'\u0447', L'\u0441', L'\u044A', L'\u044B', L'\u044C');  
 }
 
-wchar_t to_cyrillic(const char *str, int i)
+// Converts cyrillic letter c to uppercase.
+wchar_t cyrillic_uppercase(wchar_t c)
 {
-    char prev = i != 0 ? str[i-1] : '\0';
-    char next = str[i+1];
+    switch(c) {
+        case L'\u0430':
+			return L'\u0410';
+        case L'\u0431':
+			return L'\u0411';
+        case L'\u0432':
+			return L'\u0412';
+        case L'\u0433':
+			return L'\u0413';
+        case L'\u0434':
+			return L'\u0414';
+        case L'\u0435':
+			return L'\u0415';
+        case L'\u0451':
+			return L'\u0401';
+        case L'\u0436':
+			return L'\u0416';
+        case L'\u0437':
+			return L'\u0417';
+        case L'\u0438':
+			return L'\u0418';
+        case L'\u0439':
+			return L'\u0419';
+        case L'\u043A':
+			return L'\u041A';
+        case L'\u043B':
+			return L'\u041B';
+        case L'\u043C':
+			return L'\u041C';
+        case L'\u043D':
+			return L'\u041D';
+        case L'\u043E':
+			return L'\u041E';
+        case L'\u043F':
+			return L'\u041F';
+        case L'\u0440':
+			return L'\u0420';
+        case L'\u0441':
+			return L'\u0421';
+        case L'\u0442':
+			return L'\u0422';
+        case L'\u0443':
+			return L'\u0423';
+        case L'\u0444':
+			return L'\u0424';
+        case L'\u0445':
+			return L'\u0425';
+        case L'\u0446':
+			return L'\u0426';
+        case L'\u0447':
+			return L'\u0427';
+        case L'\u0448':
+			return L'\u0428';
+        case L'\u0449':
+			return L'\u0429';
+        case L'\u044A':
+			return L'\u042A';
+        case L'\u044B':
+			return L'\u042B';
+        case L'\u044C':
+			return L'\u042C';
+        case L'\u044D':
+			return L'\u042D';
+        case L'\u044E':
+			return L'\u042E';
+        case L'\u044F':
+			return L'\u042F';
+        default:
+            return c;
+    }
+}
 
-    switch(str[i]) {
+// Converts str[i] to a lowercase
+// cyrillic letter. Ignores case of str[i].
+wchar_t to_cyrillic_lower(const char *str, int i)
+{
+    char c = tolower(str[i]);
+
+    char prev = tolower(i != 0 ? str[i-1] : '\0');
+    char next = tolower(str[i+1]);
+
+    switch(c) {
     case 'a': {
         if(prev == 'y') {
             return L'\u044F';
@@ -138,6 +218,25 @@ wchar_t to_cyrillic(const char *str, int i)
     }
 
     return L'\0';
+}
+
+// Converts str[i] to a cyrillic letter depending, sometimes,
+// on the previous and following letters in str.
+// Respects case.
+wchar_t to_cyrillic(const char *str, int i)
+{
+    wchar_t ret = to_cyrillic_lower(str, i);
+
+    // If letter is uppercase or letter is comprised of
+    // two latin letters starting with an uppercase 'Y'.
+    // (As of now, there are no two-letter codes determined
+    // by the second letter not starting with 'y'. ('ch' is
+    // determined by the first letter.))
+    if (isupper(str[i]) || (i != 0 && str[i-1] == 'Y')) {
+        return cyrillic_uppercase(ret);
+    } else {
+        return ret;
+    }
 }
 
 int create_xclip_pipe(void)
