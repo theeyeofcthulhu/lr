@@ -212,9 +212,9 @@ wchar_t to_cyrillic_lower(const char *str, int i)
     case 'h':
         return '\0';
     default:
-        if (str[i] < 0) // non-ascii value, better not return
+        if (c < 0) // non-ascii value, better not return
             return '\0';
-        return str[i];
+        return c;
     }
 
     return L'\0';
