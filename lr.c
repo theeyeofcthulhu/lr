@@ -19,85 +19,85 @@ void print_table(void)
 {
     printf("ya: %lc, a: %lc, b: %lc, v: %lc, g: %lc, d: %lc, ye: %lc, e: %lc, yo: %lc, o: %lc, zh: %lc, z: %lc\n"
            "i: %lc, j: %lc, kh,x: %lc, k: %lc, l: %lc, m: %lc, n: %lc, p: %lc, r: %lc, w: %lc, sh: %lc, s: %lc\n"
-           "t: %lc, yu: %lc, u: %lc, f: %lc, ch: %lc, c: %lc, \": %lc, yy: %lc, ': %lc\n",
+           "t: %lc, yu: %lc, u: %lc, f: %lc, ch: %lc, c: %lc, \": %lc, yi: %lc, ': %lc\n",
            L'\u044F', L'\u0430', L'\u0431', L'\u0432', L'\u0433', L'\u0434', L'\u044D', L'\u0435', L'\u0451', 
            L'\u043E', L'\u0436', L'\u0437', L'\u0438', L'\u0439', L'\u0445', L'\u043A', L'\u043B', L'\u043C',
-           L'\u043D', L'\u043F', L'\u0440', L'\u0449', L'\u0448', L'\u0446', L'\u0442', L'\u044E', L'\u0443',
-           L'\u0444', L'\u0447', L'\u0441', L'\u044A', L'\u044B', L'\u044C');  
+           L'\u043D', L'\u043F', L'\u0440', L'\u0449', L'\u0448', L'\u0441', L'\u0442', L'\u044E', L'\u0443',
+           L'\u0444', L'\u0447', L'\u0446', L'\u044A', L'\u044B', L'\u044C');  
 }
 
 // Converts cyrillic letter c to uppercase.
 wchar_t cyrillic_uppercase(wchar_t c)
 {
     switch(c) {
-        case L'\u0430':
-			return L'\u0410';
-        case L'\u0431':
-			return L'\u0411';
-        case L'\u0432':
-			return L'\u0412';
-        case L'\u0433':
-			return L'\u0413';
-        case L'\u0434':
-			return L'\u0414';
-        case L'\u0435':
-			return L'\u0415';
-        case L'\u0451':
-			return L'\u0401';
-        case L'\u0436':
-			return L'\u0416';
-        case L'\u0437':
-			return L'\u0417';
-        case L'\u0438':
-			return L'\u0418';
-        case L'\u0439':
-			return L'\u0419';
-        case L'\u043A':
-			return L'\u041A';
-        case L'\u043B':
-			return L'\u041B';
-        case L'\u043C':
-			return L'\u041C';
-        case L'\u043D':
-			return L'\u041D';
-        case L'\u043E':
-			return L'\u041E';
-        case L'\u043F':
-			return L'\u041F';
-        case L'\u0440':
-			return L'\u0420';
-        case L'\u0441':
-			return L'\u0421';
-        case L'\u0442':
-			return L'\u0422';
-        case L'\u0443':
-			return L'\u0423';
-        case L'\u0444':
-			return L'\u0424';
-        case L'\u0445':
-			return L'\u0425';
-        case L'\u0446':
-			return L'\u0426';
-        case L'\u0447':
-			return L'\u0427';
-        case L'\u0448':
-			return L'\u0428';
-        case L'\u0449':
-			return L'\u0429';
-        case L'\u044A':
-			return L'\u042A';
-        case L'\u044B':
-			return L'\u042B';
-        case L'\u044C':
-			return L'\u042C';
-        case L'\u044D':
-			return L'\u042D';
-        case L'\u044E':
-			return L'\u042E';
-        case L'\u044F':
-			return L'\u042F';
-        default:
-            return c;
+    case L'\u0430':
+        return L'\u0410';
+    case L'\u0431':
+        return L'\u0411';
+    case L'\u0432':
+        return L'\u0412';
+    case L'\u0433':
+        return L'\u0413';
+    case L'\u0434':
+        return L'\u0414';
+    case L'\u0435':
+        return L'\u0415';
+    case L'\u0451':
+        return L'\u0401';
+    case L'\u0436':
+        return L'\u0416';
+    case L'\u0437':
+        return L'\u0417';
+    case L'\u0438':
+        return L'\u0418';
+    case L'\u0439':
+        return L'\u0419';
+    case L'\u043A':
+        return L'\u041A';
+    case L'\u043B':
+        return L'\u041B';
+    case L'\u043C':
+        return L'\u041C';
+    case L'\u043D':
+        return L'\u041D';
+    case L'\u043E':
+        return L'\u041E';
+    case L'\u043F':
+        return L'\u041F';
+    case L'\u0440':
+        return L'\u0420';
+    case L'\u0441':
+        return L'\u0421';
+    case L'\u0442':
+        return L'\u0422';
+    case L'\u0443':
+        return L'\u0423';
+    case L'\u0444':
+        return L'\u0424';
+    case L'\u0445':
+        return L'\u0425';
+    case L'\u0446':
+        return L'\u0426';
+    case L'\u0447':
+        return L'\u0427';
+    case L'\u0448':
+        return L'\u0428';
+    case L'\u0449':
+        return L'\u0429';
+    case L'\u044A':
+        return L'\u042A';
+    case L'\u044B':
+        return L'\u042B';
+    case L'\u044C':
+        return L'\u042C';
+    case L'\u044D':
+        return L'\u042D';
+    case L'\u044E':
+        return L'\u042E';
+    case L'\u044F':
+        return L'\u042F';
+    default:
+        return c;
     }
 }
 
@@ -177,7 +177,7 @@ wchar_t to_cyrillic_lower(const char *str, int i)
         if(next == 'h') {
             return L'\u0448';
         } else {
-            return L'\u0446';
+            return L'\u0441';
         }
     }
     case 't':
@@ -197,7 +197,7 @@ wchar_t to_cyrillic_lower(const char *str, int i)
         if(next == 'h') {
             return L'\u0447';
         } else {
-            return L'\u0441';
+            return L'\u0446';
         }
     }
     case '"':

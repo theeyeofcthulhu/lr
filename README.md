@@ -12,7 +12,7 @@ Examples
 $ lr
 ya: я, a: а, b: б, v: в, g: г, d: д, ye: э, e: е, yo: ё, o: о, zh: ж, z: з
 i: и, j: й, kh,x: х, k: к, l: л, m: м, n: н, p: п, r: р, w: щ, sh: ш, s: с
-t: т, yu: ю, u: у, f: ф, ch: ч, c: ц, ": ъ, yy: ы, ': ь
+t: т, yu: ю, u: у, f: ф, ch: ч, c: ц, ": ъ, yi: ы, ': ь
 : privet
 привет
 : do svidaniya
