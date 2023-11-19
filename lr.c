@@ -287,6 +287,8 @@ int create_xclip_pipe(void)
 // Add empty line below and move back up
 int init_live_update_space(void)
 {
+    rl_bind_key('\t', rl_insert);
+
     puts("");
     printf("\033[1A");
 
