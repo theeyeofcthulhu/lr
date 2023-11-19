@@ -332,17 +332,22 @@ int main(int argc, char **argv)
         }
     }
 
+    // Needed to print Unicode characters
     setlocale(LC_ALL, "");
 
-    char *in;
-    char *to_free = NULL;
-
-    char out[INPUT_BUF_SZ];
+    // No buffer overflows; readline() will return after reading
+    // this number of characters
+    rl_num_chars_to_read = INPUT_BUF_SZ / 4;
 
     if (do_live_update) {
         rl_startup_hook = init_live_update_space;
         rl_event_hook = live_update;
     }
+
+    char *in;
+    char *to_free = NULL;
+
+    char out[INPUT_BUF_SZ];
 
     while ((in = readline(": ")) != NULL) {
         // Free the last allocated pointer
