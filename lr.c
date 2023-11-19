@@ -15,6 +15,8 @@
 
 #define INPUT_BUF_SZ 2048
 
+bool do_live_update = true;
+
 void print_table(void)
 {
     printf("ya: %lc, a: %lc, b: %lc, v: %lc, g: %lc, d: %lc, ye: %lc, e: %lc, yo: %lc, o: %lc, zh: %lc, z: %lc\n"
@@ -284,13 +286,18 @@ int create_xclip_pipe(void)
     }
 }
 
-// Add empty line below and move back up
-int init_live_update_space(void)
+// Called everytime readline() starts up
+int readline_init(void)
 {
+    // Has to be bound here, else readline()
+    // will overwrite the binding
     rl_bind_key('\t', rl_insert);
 
-    puts("");
-    printf("\033[1A");
+    // Add empty line below and move back up
+    if (do_live_update) {
+        puts("");
+        printf("\033[1A");
+    }
 
     return 0;
 }
@@ -318,7 +325,6 @@ int live_update(void)
 int main(int argc, char **argv)
 {
     bool use_xclip = true;
-    bool do_live_update = true;
 
     int flag;
     while ((flag = getopt(argc, argv, "xl")) != -1) {
@@ -337,12 +343,15 @@ int main(int argc, char **argv)
     // Needed to print Unicode characters
     setlocale(LC_ALL, "");
 
+    // Readline init; see hook functions assigned here
+
     // No buffer overflows; readline() will return after reading
     // this number of characters
     rl_num_chars_to_read = INPUT_BUF_SZ / 4;
 
+    rl_startup_hook = readline_init;
+
     if (do_live_update) {
-        rl_startup_hook = init_live_update_space;
         rl_event_hook = live_update;
     }
 
