@@ -7,13 +7,15 @@ OBJ=lr.o
 EXE=lr
 LIBS=-lreadline
 
+TARGET=/usr/local
+
 all: $(EXE)
 
 run: all
 	./$(EXE)
 
 install: all
-	cp lr /opt
+	cp lr $(TARGET)/bin
 
 $(EXE): $(OBJ)
 	$(CC) -o $@ $^ $(LIBS)
